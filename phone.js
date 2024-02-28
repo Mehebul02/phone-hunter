@@ -1,4 +1,4 @@
-const loadPhone = async (searchText,isShowAll) => {
+const loadPhone = async (searchText=13,isShowAll) => {
   const res = await fetch(
     `https://openapi.programming-hero.com/api/phones?search=${searchText}`
   );
@@ -16,7 +16,7 @@ const displayPhone = (phones,isShowAll) => {
   } else {
     showBtn.classList.add("hidden");
   }
-  console.log('show All',isShowAll)
+  // console.log('show All',isShowAll)
   if(!isShowAll){
     phones = phones.slice(0, 12);
   }
@@ -41,7 +41,7 @@ const displayPhone = (phones,isShowAll) => {
 const handleSearch = (isShowAll) => {
   toggleSpinnerLoading(true);
   const searchField = document.getElementById("search_field").value;
-  console.log(searchField);
+  // console.log(searchField);
   loadPhone(searchField,isShowAll);
 };
 
@@ -55,15 +55,33 @@ const toggleSpinnerLoading = (isLoading) => {
 };
 // handle show details 
 const handleShowDetails = async (id) => {
-  console.log('Click the show details',id);
+  
   // load single phone data 
   const res = await fetch(`https://openapi.programming-hero.com/api/phone/${id}`);
   const data = await res.json();
   console.log(data)
+  showPhoneDetails(data.data)
+
+};
+// show Phone Details
+const showPhoneDetails = (phone) => {
+  console.log(phone)
+  const showDetailName =document.getElementById('show_phone_details_name');
+  showDetailName.innerText =phone.name;
+  const showDetailsContainer = document.getElementById('show_details_container')
+  showDetailsContainer.classList=`text-center`
+  showDetailsContainer.innerHTML=`<img src="${phone.image}" alt="">
+  <p>chipSet:${phone.mainFeatures.chipSet}</p>
+  <p>displaySize:${phone.mainFeatures.displaySize}</p>
+  <p>Gps:${phone.others?.GPS || 'No Gps available ' }</p>
+  `
+  // modal 
+  show_details_modal.showModal()
+  
 
 }
 // show All 
 const handleShowAll = () => {
   handleSearch(true)
 }
-// loadPhone();
+loadPhone();
